@@ -97,9 +97,9 @@ const NH4HistoryRates = () => {
     </div>
     </div>
     <div className="flex flex-col gap-3 mt-4">
-      <p className="text-xl  text-blue-900 ">Yearly analysis</p>
-      <div className="grid grid-cols-3 grid-rows-1 gap-5 h-80">
-      <div className="bg-gray-50 col-span-2  shadow-xl border-2">
+      <p className="text-xl  text-blue-900 my-2">Yearly analysis</p>
+      <div className="grid grid-cols-3 grid-rows-1 gap-5 h-96">
+      <div className="bg-gray-50 col-span-2  shadow-xl border-2 ">
           <NH4LineChartPerYear />
       </div>
       <div className="bg-gray-50 flex flex-col gap-4 items-center w-full shadow-xl border-2">

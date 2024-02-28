@@ -7,6 +7,7 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { IoSettings } from "react-icons/io5";import '../index.css'
+import AppLogo from '../../public/assets/logo.jpg'
 //imported icons
 import { FaTableList } from "react-icons/fa6";
 import { ImStatsDots } from "react-icons/im";
@@ -92,8 +93,8 @@ export const SidebarNav = ({
       <Sidebar backgroundColor="rgb(16 22 36)">
         <Menu>
         <MenuItem className="text-white text-center text-xl font-semibold" id="item" icon={
-            <img  className="border rounded-full" src="../../public/assets/images.jpeg"></img>
-          }>User Name</MenuItem>
+            <img  className="border rounded-full" src={AppLogo}></img>
+          }>ECOPACT</MenuItem>
           <MenuItem id="item" className="text-center"
             icon={<MenuOutlinedIcon className="text-white"/>}
             onClick={() => {
