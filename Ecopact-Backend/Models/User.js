@@ -27,7 +27,7 @@ const userSchema=new mongoose.Schema({
         type :String,
         required:true,
         minlength:5,
-        maxlength:50,
+        maxlength:200,
         unique:true
     },
     phoneNumber:{
@@ -35,14 +35,7 @@ const userSchema=new mongoose.Schema({
         required:true,
     },
     profilePhoto:{
-        data: {
-            type: Buffer,
-            default: fs.readFileSync('../assets/profilePhoto.jpg') 
-        },
-        contentType: {
-            type: String,
-            default: 'image/jpeg'
-        }
+        type:Buffer
     },
     isAdmin:{
         type : Boolean,

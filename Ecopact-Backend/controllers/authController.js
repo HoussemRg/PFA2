@@ -1,6 +1,8 @@
 const asyncHandler=require('express-async-handler');
 const {validateRegisterUser,User}=require('../Models/User')
 const bcrypt=require('bcrypt')
+const fs=require('fs')
+const path=require('path');
 /***---------------------------
  * @desc Register new user
  * @Route /api/auth/register
@@ -10,23 +12,20 @@ const bcrypt=require('bcrypt')
 const registerUser= asyncHandler (async (req,res)=>{
     const {error}=validateRegisterUser(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    let user=await User.findOne({emai:req.body.email});
+    let user=await User.findOne({email:req.body.email});
     if(user) return res.status(400).send("User already exists");
     const salt=await bcrypt.genSalt(10);
     const hashedPassword=await bcrypt.hash(req.body.password,salt);
-    if(req.body.profilePhoto){
-        
-    }
     user= new User({
-        firstname:req.body.firstname,
-        lastname:req.body.lastname,
+        firstName:req.body.firstName,
+        lastName:req.body.lastName,
         email:req.body.email,
         password:hashedPassword,
         phoneNumber:req.body.phoneNumber,
-        profilePhoto:req.body.profilePhoto
+        profilePhoto:req.file ? req.file.buffer : fs.readFileSync(path.join(__dirname,'../assets/profilePhoto.jpg')) 
     });
     await user.save();
-    return res.status(200).send(user);
+    return res.status(200).send("user created successfully");
 })
 
 module.exports={registerUser}
