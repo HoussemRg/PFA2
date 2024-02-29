@@ -1,6 +1,8 @@
 const Joi=require('joi')
 const mongoose=require('mongoose');
 const fs=require('fs')
+const jwt = require('jsonwebtoken');
+
 
 const userSchema=new mongoose.Schema({
     firstName:{
@@ -47,6 +49,10 @@ const userSchema=new mongoose.Schema({
     }
 },{timestamps:true});
 
+userSchema.methods.generateAuthToken=function(){
+    return jwt.sign({id:this._id, isAdmin:this.isAdmin},process.env.JWT_SECRET);
+}
+
 const validateRegisterUser=(obj)=>{
     const schema=Joi.object({
         firstName:Joi.string().min(3).max(100).trim().required(),
@@ -57,5 +63,23 @@ const validateRegisterUser=(obj)=>{
     })
     return schema.validate(obj);
 }
+
+const validateLoginUser=(obj)=>{
+    const schema=Joi.object({
+        email:Joi.string().email().min(5).required(),
+        password:Joi.string().min(5).max(50).required(),
+    })
+    return schema.validate(obj);
+}
+const validateUpdateUser=(obj)=>{
+    const schema=Joi.object({
+        firstName:Joi.string().min(3).max(100).trim(),
+        lastName:Joi.string().min(3).max(100).trim(),
+        email:Joi.string().email().min(5),
+        password:Joi.string().min(5).max(50),
+        phoneNumber:Joi.string(),
+    })
+    return schema.validate(obj);
+}
 const User=mongoose.model("User",userSchema)
-module.exports={validateRegisterUser,User};
+module.exports={validateRegisterUser,User,validateLoginUser,validateUpdateUser};

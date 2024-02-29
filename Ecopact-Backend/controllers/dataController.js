@@ -11,7 +11,7 @@ const { default: mongoose } = require('mongoose');
  * @access user logged in
 -----------------------------*/
 const addNewReport=asyncHandler(async(req,res)=>{
-    const userId = '65df2cfea9e086551774192d';
+    const userId = '65e08f0e5140ec68f016bb76';
     if(!req.file){
         return res.status(400).send("no file provided");
      }

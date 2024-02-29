@@ -7,6 +7,8 @@ const port=process.env.PORT || 3001;
 const path=require('path');
 const { authRoutes } = require('./routes/authRoutes');
 const { dataRoutes } = require('./routes/dataRoutes');
+const { notFound, errorHandler } = require('./middlewares/errors');
+const { userRoutes } = require('./routes/userRoutes');
 const app=express();
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
@@ -16,6 +18,15 @@ app.use(cors({
 
 app.use('/api/auth',authRoutes);
 app.use('/api/data',dataRoutes);
+app.use('/api/user',userRoutes);
+
+
+//not found middleware
+app.use(notFound);
+
+//error handler middleware
+app.use(errorHandler);
+
 
 mongoose.connect(process.env.DB_URI).then(
     ()=>{

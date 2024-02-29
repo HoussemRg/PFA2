@@ -1,5 +1,5 @@
 const asyncHandler=require('express-async-handler');
-const {validateRegisterUser,User}=require('../Models/User')
+const {validateRegisterUser,validateLoginUser,User}=require('../Models/User')
 const bcrypt=require('bcrypt')
 const fs=require('fs')
 const path=require('path');
@@ -28,4 +28,30 @@ const registerUser= asyncHandler (async (req,res)=>{
     return res.status(200).send("user created successfully");
 })
 
-module.exports={registerUser}
+
+/***---------------------------
+ * @desc Login user
+ * @Route /api/auth/login
+ * @Request post
+ * @access public
+-----------------------------*/
+const userSignIn = asyncHandler(async(req,res)=>{
+    const {error} = validateLoginUser(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+    const {email,password} = req.body;
+    const user = await User.findOne({email});
+    if(!user || !(await bcrypt.compare(password,user.password))){
+        return res.status(401).send({message: 'Invalid email or password'});
+     }
+     const token=user.generateAuthToken();
+     return res.status(201).send({
+        id: user._id,
+        isAdmin: user.isAdmin,
+        token: token,
+        firstName:user.firstName,
+        lastName:user.lastName
+     })
+
+})
+
+module.exports={registerUser,userSignIn}
