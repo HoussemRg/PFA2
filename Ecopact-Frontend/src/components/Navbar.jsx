@@ -1,7 +1,8 @@
 import { IoMdAnalytics } from "react-icons/io";
 import { Link } from 'react-router-dom';
+import {useSelector} from 'react-redux'
 const Navbar = () => {
-
+  const user=useSelector(state => state.auth);
   return (
     <nav className="max-sm:flex-col max-sm:gap-6 bg-white flex justify-between items-center px-9 py-5 h-20 ">
       <div className="flex items-center gap-3 text-2xl px-3 cursor-pointer">
@@ -23,12 +24,12 @@ const Navbar = () => {
           <Link to="/Register">Register</Link>
           
         </li>
-        <li
+        {!user && <li
           className={`font-semibold cursor-pointer max-lg:pb-3 max-lg:hover:border-b border-yellow-400 hover:text-yellow-400 transition-all active:text-yellow-400`}
         >
           <Link to="/Login">Login</Link>
           
-        </li>
+        </li>}
         <li
           className={`font-semibold cursor-pointer max-lg:pb-3 max-lg:hover:border-b border-yellow-400 hover:text-yellow-400 transition-all active:text-yellow-400`}
         >

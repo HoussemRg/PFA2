@@ -6,15 +6,18 @@ import Login from './pages/Login';
 import Contact from './pages/Contact';
 import Dashboard from './pages/Dashboards/Dashboard';
 import './index.css'
+
+//<Route path='*' element={<NotFound />} />
 function App() {
   
   return (
     <Routes>
       <Route path='/' element={<Home/>}/>
-      <Route path='/Register' element={<Register/>}/>
+      <Route path='/Register' element={ <Register/>} />
       <Route path='/Login' element={<Login/>}/>
       <Route path='/Contact' element={<Contact/>}/>
       <Route path='/Dashboard' element={<Dashboard/>} ></Route>
+      
     </Routes>
   )
 }

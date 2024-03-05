@@ -1,10 +1,16 @@
 import Navbar from "../components/Navbar";
-import {set, useForm} from 'react-hook-form';
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useForm} from 'react-hook-form';
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup"
+import {useDispatch,useSelector} from 'react-redux'
+import { loginUser } from "../apiCalls/authApiCall";
+
+
 const Login = () => {
+  const dispatch=useDispatch();
+  const user=useSelector(state => state.auth);
   const formShema = yup.object({
     email: yup.string().email("Email format is not valid").required('Email is required'),
     password: yup.string().required('Password is required')
@@ -14,8 +20,11 @@ const Login = () => {
     resolver: yupResolver(formShema)
   });
   const printData = (data) =>{
-      console.log(data);
+      dispatch(loginUser(data));
+      console.log(user)
   };
+
+  
   
   return (
     <div>
