@@ -1,16 +1,17 @@
-import axios from 'axios';
-import Url from '../utils/url';
+import request from './request';
 import { authActions } from '../slices/authSlice';
 import {toast} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const loginUser=(user)=>{
     return async (dispatch)=>{
         try{
-            const res=await axios.post(`${Url}/api/auth/login`,user);
+            const res=await request.post(`/api/auth/login`,user);
+            console.log(res.data);
             dispatch(authActions.login(res.data));
-            toast.success("user logged in")
+            
         }catch(err){
-            console.log(err);
+            toast.error(err.response.data);
         }
     }
 }

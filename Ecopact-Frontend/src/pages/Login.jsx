@@ -1,16 +1,15 @@
 import Navbar from "../components/Navbar";
 import { useForm} from 'react-hook-form';
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link,  } from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup"
-import {useDispatch,useSelector} from 'react-redux'
+import {useDispatch} from 'react-redux'
 import { loginUser } from "../apiCalls/authApiCall";
 
 
 const Login = () => {
   const dispatch=useDispatch();
-  const user=useSelector(state => state.auth);
+
   const formShema = yup.object({
     email: yup.string().email("Email format is not valid").required('Email is required'),
     password: yup.string().required('Password is required')
@@ -20,11 +19,11 @@ const Login = () => {
     resolver: yupResolver(formShema)
   });
   const printData = (data) =>{
-      dispatch(loginUser(data));
-      console.log(user)
+      dispatch(loginUser({email:data.email,password:data.password}));
+      
   };
 
-  
+
   
   return (
     <div>
@@ -88,7 +87,7 @@ const Login = () => {
                 </div>
 
                 <div className="text-center lg:text-left flex flex-col ">
-                  <button className="border rounded px-5 py-2 hover:bg-yellow-400 hover:text-white transition">Login</button>
+                  <input type="submit" value="Login" className="border rounded px-5 py-2 hover:bg-yellow-400 hover:text-white transition" />
                   <p className="mb-0 mt-2 pt-1 text-sm font-semibold">
                     Don't have an account? 
 

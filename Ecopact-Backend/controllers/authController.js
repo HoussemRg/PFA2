@@ -41,7 +41,7 @@ const userSignIn = asyncHandler(async(req,res)=>{
     const {email,password} = req.body;
     const user = await User.findOne({email});
     if(!user || !(await bcrypt.compare(password,user.password))){
-        return res.status(401).send({message: 'Invalid email or password'});
+        return res.status(400).send('Invalid email or password');
      }
      const token=user.generateAuthToken();
      return res.status(201).send({

@@ -9,13 +9,14 @@ import store from './store.js';
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
     <Provider store={store}>
+    <BrowserRouter>
+    
       <ProSidebarProvider>
         <App />
       </ProSidebarProvider>
-      </Provider>
+      
     </BrowserRouter>
-    
+    </Provider>
   </React.StrictMode>
 );
