@@ -9,18 +9,23 @@ import PxOyHistoryRates from "./PxOyHistoryRates";
 import NH4PredictionRates from "./NH4PredictionRates";
 import PxOyPredictionRates from "./PxOyPredictionRates";
 import AdminDashboard from "./AdminDashboard";
+import SHistoryRates from "./SHistoryRates";
+import SPredictionRates from "./SPredictionRates";
 
 const Dashboard = () => {
-  const [mailToggled,setMailToggled]=useState(false);
-  const [alertToggled,setAlertToggled]=useState(false);
-  const [dashboard,setDashboard]=useState({
+  const navigationMenu= JSON.parse(localStorage.getItem("menu")) ? JSON.parse(localStorage.getItem("menu")) : {
     mainDashboard:true,
     adminDashboard:false,
     NH4HistoryDashboard:false,
     PxOyHistoryDashboard:false,
     NH4PredictionDashboard:false,
     PxOyPredictionDashboard:false,
-  })
+    SHistoryDashboard:false,
+    SPredictionDashboard:false,
+  }
+  const [mailToggled,setMailToggled]=useState(false);
+  const [alertToggled,setAlertToggled]=useState(false);
+  const [dashboard,setDashboard]=useState(navigationMenu)
 
   return (
     <div className=" w-full flex ">
@@ -46,6 +51,8 @@ const Dashboard = () => {
             {dashboard.PxOyHistoryDashboard && <PxOyHistoryRates />}
             {dashboard.NH4PredictionDashboard && <NH4PredictionRates />}
             {dashboard.PxOyPredictionDashboard && <PxOyPredictionRates />}
+            {dashboard.SHistoryDashboard && <SHistoryRates />}
+            {dashboard.SPredictionDashboard && <SPredictionRates />}
           </div>
         </div>
 

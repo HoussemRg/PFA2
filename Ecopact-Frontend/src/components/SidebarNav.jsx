@@ -29,64 +29,118 @@ export const SidebarNav = ({
   const { collapseSidebar } = useProSidebar();
 
   const navigateToMainDashboard = () => {
-    setDashboard({
+    const nav={
       mainDashboard: true,
       adminDashboard: false,
       NH4HistoryDashboard: false,
       PxOyHistoryDashboard: false,
       NH4PredictionDashboard: false,
       PxOyPredictionDashboard: false,
-    });
+      SHistoryDashboard:false,
+      SPredictionDashboard:false,
+    }
+    localStorage.setItem("menu",JSON.stringify(nav))
+    setDashboard(JSON.parse(localStorage.getItem("menu")));
   };
   const navigateToNH4HistoryDashboard = () => {
-    setDashboard({
+    const nav={
       mainDashboard: false,
       adminDashboard: false,
       NH4HistoryDashboard: true,
       PxOyHistoryDashboard: false,
       NH4PredictionDashboard: false,
       PxOyPredictionDashboard: false,
-    });
+      SHistoryDashboard:false,
+      SPredictionDashboard:false,
+    }
+    localStorage.setItem("menu",JSON.stringify(nav))
+    setDashboard(JSON.parse(localStorage.getItem("menu")));
+    
   };
   const navigateToPxOyHistoryDashboard = () => {
-    setDashboard({
+    const nav={
       mainDashboard: false,
       adminDashboard: false,
       NH4HistoryDashboard: false,
       PxOyHistoryDashboard: true,
       NH4PredictionDashboard: false,
       PxOyPredictionDashboard: false,
-    });
+      SHistoryDashboard:false,
+      SPredictionDashboard:false,
+    }
+    localStorage.setItem("menu",JSON.stringify(nav))
+    setDashboard(JSON.parse(localStorage.getItem("menu")));
   };
   const navigateToNH4PredictionDashboard = () => {
-    setDashboard({
+    const nav={
       mainDashboard: false,
       adminDashboard: false,
       NH4HistoryDashboard: false,
       PxOyHistoryDashboard: false,
       NH4PredictionDashboard: true,
       PxOyPredictionDashboard: false,
-    });
+      SHistoryDashboard:false,
+      SPredictionDashboard:false,
+    }
+    localStorage.setItem("menu",JSON.stringify(nav))
+    setDashboard(JSON.parse(localStorage.getItem("menu")));
   };
   const navigateToPxOyPredictionDashboard = () => {
-    setDashboard({
+    const nav={
       mainDashboard: false,
       adminDashboard: false,
       NH4HistoryDashboard: false,
       PxOyHistoryDashboard: false,
       NH4PredictionDashboard: false,
       PxOyPredictionDashboard: true,
-    });
+      SHistoryDashboard:false,
+      SPredictionDashboard:false,
+    }
+    localStorage.setItem("menu",JSON.stringify(nav))
+    setDashboard(JSON.parse(localStorage.getItem("menu")));
   };
   const navigateToAdminDashboard = () => {
-    setDashboard({
+    const nav={
       mainDashboard: false,
       adminDashboard: true,
       NH4HistoryDashboard: false,
       PxOyHistoryDashboard: false,
       NH4PredictionDashboard: false,
       PxOyPredictionDashboard: false,
-    });
+      SHistoryDashboard:false,
+      SPredictionDashboard:false,
+    }
+    localStorage.setItem("menu",JSON.stringify(nav))
+    setDashboard(JSON.parse(localStorage.getItem("menu")));
+  };
+
+  const navigateToSHistoryDashboard = () => {
+    const nav={
+      mainDashboard: false,
+      adminDashboard: false,
+      NH4HistoryDashboard: false,
+      PxOyHistoryDashboard: false,
+      NH4PredictionDashboard: false,
+      PxOyPredictionDashboard: false,
+      SHistoryDashboard:true,
+      SPredictionDashboard:false,
+    }
+    localStorage.setItem("menu",JSON.stringify(nav))
+    setDashboard(JSON.parse(localStorage.getItem("menu")));
+  };
+  const navigateToSPredictionDashboard = () => {
+    const nav={
+      mainDashboard: false,
+      adminDashboard: false,
+      NH4HistoryDashboard: false,
+      PxOyHistoryDashboard: false,
+      NH4PredictionDashboard: false,
+      PxOyPredictionDashboard: false,
+      SHistoryDashboard:false,
+      SPredictionDashboard:true,
+    }
+    localStorage.setItem("menu",JSON.stringify(nav))
+    setDashboard(JSON.parse(localStorage.getItem("menu")));
   };
   return (
     <div id="sidebar" style={({ height: "100vh" }, { display: "flex" })}>
@@ -112,13 +166,16 @@ export const SidebarNav = ({
           <MenuItem onClick={navigateToAdminDashboard} id="item" className="text-white" icon={<FaTableList />}>Admin Dashboard</MenuItem>
           <MenuItem onClick={navigateToMainDashboard} id="item" className="text-white" icon={<FaTableList />}>Main Dashboard</MenuItem>
           <SubMenu id="item" className="text-white" icon={<ImStatsDots />} label="Historical rates">
-                  <MenuItem onClick={navigateToNH4HistoryDashboard} className="sub bg-blue-950" icon={<IoAnalyticsOutline/>}>NH4HistoryRates</MenuItem>
-                  <MenuItem onClick={navigateToPxOyHistoryDashboard} className="sub bg-blue-950" icon={<IoAnalyticsOutline />}>PxOyPredictionRates</MenuItem>
+                  <MenuItem onClick={navigateToNH4HistoryDashboard} className="sub bg-blue-950" icon={<IoAnalyticsOutline/>}>NH4 Historical Rates</MenuItem>
+                  <MenuItem onClick={navigateToPxOyHistoryDashboard} className="sub bg-blue-950" icon={<IoAnalyticsOutline />}>PxOy Historical Rates</MenuItem>
+                  <MenuItem onClick={navigateToSHistoryDashboard} className="sub bg-blue-950" icon={<IoAnalyticsOutline />}>S Historical Rates</MenuItem>
           </SubMenu>
           <SubMenu id="item" className="text-white" icon={<ImStatsDots />} label="Prediction rates">
-                  <MenuItem onClick={navigateToNH4PredictionDashboard} className="sub bg-blue-950" icon={<IoAnalyticsOutline />}>NH4PredictionRates</MenuItem>
-                  <MenuItem onClick={navigateToPxOyPredictionDashboard} className="sub bg-blue-950" icon={<IoAnalyticsOutline />}>PxOyPredictionRates</MenuItem>
+                  <MenuItem onClick={navigateToNH4PredictionDashboard} className="sub bg-blue-950" icon={<IoAnalyticsOutline />}>NH4 Prediction Rates</MenuItem>
+                  <MenuItem onClick={navigateToPxOyPredictionDashboard} className="sub bg-blue-950" icon={<IoAnalyticsOutline />}>PxOy Prediction Rates</MenuItem>
+                  <MenuItem onClick={navigateToSPredictionDashboard} className="sub bg-blue-950" icon={<IoAnalyticsOutline />}>S Prediction Rates</MenuItem>
           </SubMenu>
+          
           <div className="absolute bottom-16 w-full">
           <Link to="/"><MenuItem  id="item" className="text-white" icon={<HomeOutlinedIcon />}>Home</MenuItem></Link>
           <Link to="/Contact"><MenuItem id="item" className="text-white" icon={<ContactsOutlinedIcon />}>Contact</MenuItem></Link>
@@ -128,3 +185,4 @@ export const SidebarNav = ({
       </div>
   );
 };
+//sulfur

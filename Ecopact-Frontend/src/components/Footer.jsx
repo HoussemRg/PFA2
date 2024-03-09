@@ -60,7 +60,7 @@ const Footer = () => {
                 <img className='w-20 im' src='../assets/statistics-data-analysis-financial-administration-circular-diagram-with-colorful-segments-business-pie-chart-statistics-audit-consulting_335657-764.avif'/>
             </div>
         </div>
-        <div className='bg-red w-full h-20 bg-slate-900 text-white flex justify-center items-center max-sm:text-sm'>copyright © all rights reserved-<p className='font-bold'> ECOPACT</p></div>
+        <div className='bg-red w-full h-20 bg-slate-900 text-white flex justify-center items-center max-sm:text-sm'>Copyright 2024 © all rights reserved-<p className='font-bold'> ECOPACT</p></div>
     </footer>
   )
 }
