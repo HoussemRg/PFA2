@@ -3,9 +3,18 @@ import NH4LineChartPerYear from "../../components/charts/NH4LineChartPerYear";
 import * as yup from 'yup'
 import {useForm} from 'react-hook-form'
 import {yupResolver} from '@hookform/resolvers/yup'
+import {useDispatch,useSelector} from 'react-redux'
+import { getNH4DataPerDate, getNH4DataPerMonth, getNH4DataPerYear } from "../../apiCalls/dataApiCall";
+import { useEffect,useState } from "react";
+import { dataActions } from "../../slices/dataSlice";
 
 const NH4HistoryRates = () => {
-  const result=3.6;
+  const dispatch=useDispatch();
+  const {NH4DataPerDate,NH4DataPerMonth,NH4DataPerYear,recentNH4Year}=useSelector(state=>state.data)
+  const [NH4AverageRatePerMonth,setNH4AverageRatePerMonth]=useState(null)
+  const [NH4RatesNumberPerMonth,setNH4RatesNumberPerMonth]=useState(null)
+  const [NH4AverageRatePerYear,setNH4AverageRatePerYear]=useState(null)
+  const [NH4RatesNumberPerYear,setNH4RatesNumberPerYear]=useState(null)
   const specificDateSchema=yup.object().shape({
     date:yup.date().required("Full date is required"),
   });
@@ -27,17 +36,47 @@ const NH4HistoryRates = () => {
   
   const submitSpecificDate=(data)=>{
     const date=new Date(data.date);
-    console.log({day:date.getDate(),month:date.getMonth()+1,year:date.getFullYear()});
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    dispatch(getNH4DataPerDate('NH4',year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day)));
   }
   const submitMonth=(data)=>{
     const [year,month]=data.month.split("-");
-    console.log({year,month})
+    dispatch(getNH4DataPerMonth('NH4',month,year))
   }
   const submitYear=(data)=>{
-    console.log(data);
+    const year=data.year;
+    dispatch(dataActions.setRecentNH4Year(year))
+    dispatch(getNH4DataPerYear('NH4',year));
   }
-  
-  
+  const calculateNH4AverageRateAndNumberPerMonth=()=>{
+    if(NH4DataPerMonth.length!==0){
+      let avg=0;
+      for(let i=0;i<NH4DataPerMonth.length;i++){
+        avg+=NH4DataPerMonth[i].data.dataRate;
+      }
+      avg=(avg/NH4DataPerMonth.length).toFixed(2);
+      setNH4AverageRatePerMonth(avg);
+      setNH4RatesNumberPerMonth(NH4DataPerMonth.length)
+    }
+  }
+  const calculateNH4AverageRateAndNumberPerYear=()=>{
+    if(NH4DataPerYear.length!==0){
+      let avg=0;
+      for(let i=0;i<NH4DataPerYear.length;i++){
+        avg+=NH4DataPerYear[i].data.dataRate;
+      }
+      avg=(avg/NH4DataPerYear.length).toFixed(2);
+      setNH4AverageRatePerYear(avg);
+      setNH4RatesNumberPerYear(NH4DataPerYear.length)
+    }
+  }
+  useEffect(()=>{
+    calculateNH4AverageRateAndNumberPerMonth();
+    calculateNH4AverageRateAndNumberPerYear();
+  },[NH4DataPerMonth,NH4DataPerYear,recentNH4Year])
+
   return (
   <div className=" w-full h-full flex flex-col  gap-5 mx-auto ">
     <h1 className=" text-blue-900 text-2xl font-bold py-1">Global Dashboard</h1>
@@ -54,7 +93,7 @@ const NH4HistoryRates = () => {
         </div>
         <div className="flex flex-col gap-2">
           <div className="text-blue-900 px-2 py-4 font-bold">Result</div>
-          { result ? <div className="text-lg font-bold pl-4 ">{result}</div> : <div className="text-lg pl-4">No data found</div> }
+          { NH4DataPerDate?.data.dataRate ? <div className="text-lg font-bold pl-4 ">{NH4DataPerDate?.data.dataRate}</div> : <div className="text-lg pl-4">No data found</div> }
         </div>
       </div>
       <div className="flex flex-col gap-1 w-2/3">
@@ -87,11 +126,11 @@ const NH4HistoryRates = () => {
           </form>
           <div className="flex w-2/3  flex-col gap-3  py-2 border-2 border-gray-300 rounded  col-span-1 text-blue-950">
             <p className=" pl-2  font-bold"> Average rate</p>
-            <div className="pl-2 text-2xl font-bold ">3.6</div>
+            {NH4AverageRatePerMonth ? <div className="pl-2 text-2xl font-bold ">{NH4AverageRatePerMonth}</div>: <div className="pl-2 text-xs font-bold ">No Data Found</div> }
           </div>
           <div className="flex w-2/3  flex-col gap-3  py-2 border-2 rounded border-gray-300 col-span-1 text-blue-950">
             <p className=" pl-2 font-bold">Number of arrangements</p>
-            <div className=" pl-2 text-2xl font-bold ">12</div>
+            {NH4RatesNumberPerMonth ? <div className=" pl-2 text-2xl font-bold ">{NH4RatesNumberPerMonth}</div>: <div className=" pl-2 text-xs font-bold ">No Data Found</div> }
         </div>
       </div>
     </div>
@@ -100,7 +139,7 @@ const NH4HistoryRates = () => {
       <p className="text-xl  text-blue-900 my-2">Yearly analysis</p>
       <div className="grid grid-cols-3 grid-rows-1 gap-5 h-96">
       <div className="bg-gray-50 col-span-2  shadow-xl border-2 ">
-          <NH4LineChartPerYear />
+          <NH4LineChartPerYear year={recentNH4Year} />
       </div>
       <div className="bg-gray-50 flex flex-col gap-4 items-center w-full shadow-xl border-2">
           <form className="w-2/3  mt-4 flex flex-col  gap-2" onSubmit={handleSubmitYear(submitYear)}>
@@ -115,11 +154,11 @@ const NH4HistoryRates = () => {
           </form>
           <div className="flex w-2/3  flex-col gap-3  py-2 border-2 border-gray-300 rounded  col-span-1 text-blue-950">
             <p className=" pl-2  font-bold"> Average rate</p>
-            <div className="pl-2 text-2xl font-bold ">3.6</div>
+            {NH4AverageRatePerYear ? <div className="pl-2 text-2xl font-bold ">{NH4AverageRatePerYear}</div> : <div className="pl-2 text-xs font-bold ">No Data Found</div>}
           </div>
           <div className="flex w-2/3  flex-col gap-3  py-2 border-2 rounded border-gray-300 col-span-1 text-blue-950">
             <p className=" pl-2 font-bold">Number of arrangements</p>
-            <div className=" pl-2 text-2xl font-bold ">12</div>
+            {NH4RatesNumberPerYear ? <div className=" pl-2 text-2xl font-bold ">{NH4RatesNumberPerYear}</div> : <div className=" pl-2 text-xs font-bold ">No Data Found</div>}
         </div>
       </div>
     </div>

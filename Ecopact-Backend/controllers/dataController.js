@@ -41,7 +41,7 @@ const addNewReport=asyncHandler(async(req,res)=>{
 /***---------------------------
  * @desc Get Averate Rate of data type given
  * @Route /api/data/dataPerDate
- * @Request get
+ * @Request post
  * @access user logged in
 -----------------------------*/
 const getDataPerDate=asyncHandler(async (req,res)=>{
@@ -56,12 +56,12 @@ const getDataPerDate=asyncHandler(async (req,res)=>{
 
 /***---------------------------
  * @desc Get Averate Rate of data type given
- * @Route /api/data/:dataType
+ * @Route /api/data/average
  * @Request get
  * @access user logged in
 -----------------------------*/
 const getAverageOfAllData=asyncHandler(async (req,res)=>{
-   const dataType = req.params.dataType;
+   const dataType = req.params.type;
    if(!dataType){
       return res.status(400).send("No data given");
    }
@@ -73,7 +73,7 @@ const getAverageOfAllData=asyncHandler(async (req,res)=>{
    for(let i=0;i<data.length;i++){
       avg+=data[i].data.dataRate;
    }
-   avg=avg/data.length;
+   avg=(avg/data.length).toFixed(2);
    res.status(200).send({averageRate:avg});
 })
 
@@ -99,7 +99,7 @@ const getAverageRatePerMonth=asyncHandler(async (req,res)=>{
    for(let i=0;i<filteredData.length;i++){
       avg+=data[i].data.dataRate;
    }
-   avg=avg/data.length;
+   avg=(avg/data.length).toFixed(2);
    res.status(200).send({averageRate:avg});
 })
 
@@ -124,7 +124,7 @@ const getAverageRatePerYear=asyncHandler(async (req,res)=>{
    for(let i=0;i<filteredData.length;i++){
       avg+=data[i].data.dataRate;
    }
-   avg=avg/data.length;
+   avg=(avg/data.length).toFixed(2);
    res.status(200).send({averageRate:avg});
 })
 
@@ -138,16 +138,21 @@ const getAverageRatePerYear=asyncHandler(async (req,res)=>{
 -----------------------------*/
 const getDataPerMonth=asyncHandler(async (req,res)=>{
    const dataType=req.body.dataType;
-   const month=req.body.month;
-   const year=req.body.year;
+   const month=parseInt(req.body.month);
+   const year=parseInt(req.body.year);
+   
    const data= await Data.find({'data.dataName':dataType});
    if(data.length ===0){
       return res.status(404).send(`${dataType} is not found`);
    }
-   const filteredData=data.filter(data=> data.date.getMonth()+1===month && data.date.getFullYear()===year);
+   
+   
+   let filteredData=data.filter(data=> data.date.getMonth()+1 ===month && data.date.getFullYear()===year);
+   
    if(filteredData.length===0){
       return res.status(404).send(`no data found for this date`);
    }
+   
    res.status(200).send(filteredData); 
 })
 
@@ -160,7 +165,7 @@ const getDataPerMonth=asyncHandler(async (req,res)=>{
 -----------------------------*/
 const getDataPerYear=asyncHandler(async (req,res)=>{
    const dataType=req.body.dataType;
-   const year=req.body.year;
+   const year=parseInt(req.body.year);
    const data= await Data.find({'data.dataName':dataType});
    if(data.length ===0){
       return res.status(404).send(`${dataType} is not found`);

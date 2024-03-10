@@ -41,4 +41,19 @@ const updateUser = asyncHandler(async(req, res) => {
     ).select("-password");
     return res.status(201).send(updatedUser);
 });
-module.exports={deleteUser,updateUser};
+
+const getUsers = asyncHandler(async(req,res)=>{
+    const users = await User.find({},{ password: 0 });
+    if(!users) return res.status(404).send('No user found');
+    return res.status(200).json({users: users});                
+})
+const getOneUser = asyncHandler(async(req,res)=>{
+    const id = req.params.id;
+    const user = await User.findOne(
+        { _id: id }, 
+        { password: 0}  
+      );    
+    if(!user) return res.status(404).send('No user found');
+    return res.status(200).json({user: user});
+})
+module.exports={deleteUser,updateUser,getUsers,getOneUser};

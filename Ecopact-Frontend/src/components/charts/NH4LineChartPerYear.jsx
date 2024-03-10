@@ -1,26 +1,34 @@
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
-import {UserData} from '../../test'
-import { useState } from "react";
+import {useSelector} from 'react-redux'
 
-const NH4LineChartPerYear = () => {
+const NH4LineChartPerYear = (props) => {
+  const {NH4DataPerYear}=useSelector(state => state.data);
+  const months=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
      const calculateAvg=(userData)=>{
       let array=[];
       let subarray=[]; 
-      for(let i=1;i<=12;i++){
-        subarray=userData.filter((data)=> new Date(data.Date).getMonth()+1===i && new Date(data.Date).getFullYear()===2024 )
-        array.push(subarray);
+      for (let i = 0; i < 12; i++) {
+        subarray = userData.filter(data => {
+            const date = new Date(data.date);
+            return date.getMonth() === i && date.getFullYear() === props.year;
+        });
+        if (subarray.length > 0) {
+            array.push({ month: months[i], subarray: subarray });
+        }
       }
+      
       let moyArr=[];
       for(let i=0;i<array.length;i++){
         let moy=0;
-        for(let j=0;j<array[i].length;j++){
-          moy=moy+array[i][j].NH4
+        for(let j=0;j<array[i].subarray.length;j++){
+          moy=moy+array[i].subarray[j].data.dataRate
         }
-        moyArr.push(moy/array[i].length);
+        moyArr.push({month:array[i].month,moyenne:moy/array[i].subarray.length});
       }
       return moyArr
      }
+     
      const colorArray = [
       'rgb(255, 99, 132)',
       'rgb(54, 162, 235)',
@@ -35,20 +43,18 @@ const NH4LineChartPerYear = () => {
       'rgb(255, 0, 255)',
       'rgb(0, 255, 255)'
     ];
-     
-      
-      const [userData, setUserData] = useState({
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+     const data=calculateAvg(NH4DataPerYear);
+     const finalData={
+      labels: data.map(item => item.month),
         datasets: [
           {
             label: "NH4 Average Rates",
-            data:calculateAvg(UserData),
+            data:data.map(item => item.moyenne),
             backgroundColor:colorArray,
             
           },
         ],
-      });
-      
+     }
       const options={
         plugins: {
           title: {
@@ -62,7 +68,7 @@ const NH4LineChartPerYear = () => {
       }
       return (
         <div className="h-[300px] flex justify-center items-center">
-           <Bar data={userData} options={options} />
+           <Bar data={finalData} options={options} />
         </div>
       )
 }

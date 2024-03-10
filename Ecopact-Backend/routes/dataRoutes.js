@@ -9,10 +9,10 @@ const dataRoutes=express.Router();
 dataRoutes.post('/add',verifyToken,uploadFile.single('file'),addNewReport);
 
 // get data per dataType and specific date
-dataRoutes.get('/dataPerDate',verifyToken,getDataPerDate)
+dataRoutes.post('/dataPerDate',verifyToken,getDataPerDate)
 
 // get average of all data per dataType
-dataRoutes.get('/average/:dataType',verifyToken,getAverageOfAllData)
+dataRoutes.get(`/average/:type`,verifyToken,getAverageOfAllData)
 
 // get average rate per month and  dataType
 dataRoutes.get('/averageRatePerMonth',verifyToken,getAverageRatePerMonth)
@@ -21,8 +21,8 @@ dataRoutes.get('/averageRatePerMonth',verifyToken,getAverageRatePerMonth)
 dataRoutes.get('/averageRatePerYear',verifyToken,getAverageRatePerYear)
 
 // get data per month of a given dataType
-dataRoutes.get('/dataPerMonth',verifyToken,getDataPerMonth)
+dataRoutes.post('/dataPerMonth',verifyToken,getDataPerMonth)
 
 // get data per year of a given dataType
-dataRoutes.get('/dataPerYear',verifyToken,getDataPerYear)
+dataRoutes.post('/dataPerYear',verifyToken,getDataPerYear)
 module.exports={dataRoutes}

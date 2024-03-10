@@ -1,23 +1,26 @@
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
-import {UserData} from '../../test'
-import { useState } from "react";
+
+import {useSelector} from 'react-redux'
 
 const NH4LineChartPerMonth = () => {
-  const [userData, setUserData] = useState({
-    labels: UserData.filter((data) => new Date(data.Date).getMonth()===0).map((data) => data.Date),
+  
+  const {NH4DataPerMonth}=useSelector(state => state.data);
+  const data={
+    labels: NH4DataPerMonth.map(data => new Date(data.date).toISOString().split('T')[0]),
     datasets: [
       {
         label: "NH4 Rates",
-        data: UserData.filter((data) => new Date(data.Date).getMonth()===0).map((data) => data.NH4),
+        data: NH4DataPerMonth.map((data) => data?.data.dataRate),
         borderColor: 'rgb(75, 192, 192)',
         
       },
     ],
-  });
+  }
+  
   return (
     <div className="h-[300px] flex justify-center items-center">
-       <Line data={userData} />
+       <Line data={data} />
     </div>
   )
 }
