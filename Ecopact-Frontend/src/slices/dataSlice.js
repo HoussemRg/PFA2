@@ -18,6 +18,10 @@ const dataSlice=createSlice({
         recentNH4Year:null,
         recentPxOyYear:null,
         recentSYear:null,
+        NH4RecentData:[],
+        PxOyRecentData:[],
+        SRecentData:[],
+        Arrangements:[]
     },
     reducers:{
         getNH4AverageRates:(state,action)=>{
@@ -30,13 +34,13 @@ const dataSlice=createSlice({
             state.SAverageRates=action.payload;
         },
         getNH4PerDate:(state,action)=>{
-            state.NH4DataPerDate=action.payload;
+            state.NH4DataPerDate=action.payload?.data?.dataRate;
         },
         getPxOyPerDate:(state,action)=>{
-            state.PxOyDataPerDate=action.payload;
+            state.PxOyDataPerDate=action.payload?.data?.dataRate;
         },
         getSPerDate:(state,action)=>{
-            state.SDataPerDate=action.payload;
+            state.SDataPerDate=action.payload?.data?.dataRate;
         },
         getNH4PerMonth:(state,action)=>{
             state.NH4DataPerMonth=action.payload;
@@ -65,7 +69,18 @@ const dataSlice=createSlice({
         setRecentSYear:(state,action)=>{
             state.recentSYear=action.payload;
         },
-        
+        getNH4RecentData:(state,action)=>{
+            state.NH4RecentData=action.payload;
+        },
+        getPxOyRecentData:(state,action)=>{
+            state.PxOyRecentData=action.payload;
+        },
+        getSRecentData:(state,action)=>{
+            state.SRecentData=action.payload;
+        },
+        getArrangements:(state,action)=>{
+            state.Arrangements=action.payload;
+        },
     }
 })
 

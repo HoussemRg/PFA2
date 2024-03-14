@@ -14,6 +14,13 @@ const postFile = (file) => {
           }
         });
         toast.success(res.data);
+        dispatch(getNH4AverageData());
+        dispatch(getPxOyAverageData());
+        dispatch(getSAverageData());
+        dispatch(getRecentData('NH4'));
+        dispatch(getRecentData('PxOy'));
+        dispatch(getRecentData('S'));
+        dispatch(getArrangementsNumber());
       } catch (err) {
         toast.error(err?.response?.data)
       }
@@ -30,7 +37,7 @@ const getNH4AverageData=()=>{
                 }})
             dispatch(dataActions.getNH4AverageRates(res.data?.averageRate));
         }catch(err){
-            toast.error(err?.response?.data)
+            //toast.error(err?.response?.data)
         }
     }
 }
@@ -45,7 +52,7 @@ const getPxOyAverageData=()=>{
                 }})
             dispatch(dataActions.getPxOyAverageRates(res.data?.averageRate));
         }catch(err){
-            toast.error(err?.response?.data)
+            //toast.error(err?.response?.data)
         }
     }
 }
@@ -60,54 +67,39 @@ const getSAverageData=()=>{
                 }})
             dispatch(dataActions.getSAverageRates(res.data?.averageRate));
         }catch(err){
-            toast.error(err?.response?.data)
+            //toast.error(err?.response?.data)
         }
     }
 }
 
-const getNH4DataPerDate=(dataType,date)=>{
+const getDataPerDate=(dataType,date)=>{
     return async (dispatch,getState)=>{
         try{
             const res= await request.post(`/api/data/dataPerDate`,{dataType,date},{
                 headers: {
                     Authorization: "Bearer " + getState().auth.user.token, 
                 }})
-            dispatch(dataActions.getNH4PerDate(res.data));
+            if(dataType==="NH4"){
+                dispatch(dataActions.getNH4PerDate(res.data));    
+            }else if(dataType==="PxOy"){
+                dispatch(dataActions.getPxOyPerDate(res.data));
+            }else if(dataType==="S"){
+                dispatch(dataActions.getSPerDate(res.data));
+            }
         }catch(err){          
             toast.error(err.response.data)
-            dispatch(dataActions.getNH4PerDate(null))
+            if(dataType==="NH4"){
+                dispatch(dataActions.getNH4PerDate(null));    
+            }else if(dataType==="PxOy"){
+                dispatch(dataActions.getPxOyPerDate(null));
+            }else if(dataType==="S"){
+                dispatch(dataActions.getSPerDate(null));
+            }
         }
     }
 }
-const getPxOyDataPerDate=(dataType,date)=>{
-    return async (dispatch,getState)=>{
-        try{
-            const res= await request.post(`/api/data/dataPerDate`,{dataType,date},{
-                headers: {
-                    Authorization: "Bearer " + getState().auth.user.token, 
-                }})
-            dispatch(dataActions.getPxOyPerDate(res.data));
-        }catch(err){          
-            toast.error(err.response.data)
-            dispatch(dataActions.getPxOyPerDate(null))
-        }
-    }
-}
-const getSDataPerDate=(dataType,date)=>{
-    return async (dispatch,getState)=>{
-        try{
-            const res= await request.post(`/api/data/dataPerDate`,{dataType,date},{
-                headers: {
-                    Authorization: "Bearer " + getState().auth.user.token, 
-                }})
-            dispatch(dataActions.getSPerDate(res.data));
-        }catch(err){          
-            toast.error(err.response.data)
-            dispatch(dataActions.getSPerDate(null)) 
-        }
-    }
-}
-const getNH4DataPerMonth=(dataType,month,year)=>{
+
+const getDataPerMonth=(dataType,month,year)=>{
     return async (dispatch,getState)=>{
         try{
            
@@ -115,63 +107,78 @@ const getNH4DataPerMonth=(dataType,month,year)=>{
                 headers: {
                     Authorization: "Bearer " + getState().auth.user.token, 
                 }})
-                
-            dispatch(dataActions.getNH4PerMonth(res.data));
+                if(dataType==="NH4"){
+                    dispatch(dataActions.getNH4PerMonth(res.data));    
+                }else if(dataType==="PxOy"){
+                    dispatch(dataActions.getPxOyPerMonth(res.data));
+                }else if(dataType==="S"){
+                    dispatch(dataActions.getSPerMonth(res.data));
+                }    
         }catch(err){
-                      
             toast.error(err.response.data)
         }
     }
 }
 
-const getPxOyDataPerMonth=(dataType,month,year)=>{
+const getArrangementsNumber=()=>{
     return async (dispatch,getState)=>{
         try{
-            
-            const res= await request.post(`/api/data/dataPerMonth`,{dataType,month,year},{
+           
+            const res= await request.get(`/api/data/arrangements`,{
                 headers: {
                     Authorization: "Bearer " + getState().auth.user.token, 
                 }})
-                
-            dispatch(dataActions.getPxOyPerMonth(res.data));
+               
+            dispatch(dataActions.getArrangements(res.data));    
         }catch(err){
-                      
-            toast.error(err.response.data)
+           // console.log(err)
         }
     }
 }
 
-const getSDataPerMonth=(dataType,month,year)=>{
+const getDataPerYear=(dataType,year)=>{
     return async (dispatch,getState)=>{
         try{
-            
-            const res= await request.post(`/api/data/dataPerMonth`,{dataType,month,year},{
-                headers: {
-                    Authorization: "Bearer " + getState().auth.user.token, 
-                }})
-                
-            dispatch(dataActions.getSPerMonth(res.data));
-        }catch(err){
-                    
-            toast.error(err.response.data)
-        }
-    }
-}
-
-const getNH4DataPerYear=(dataType,year)=>{
-    return async (dispatch,getState)=>{
-        try{
-            console.log({dataType,year})
+           
             const res= await request.post(`/api/data/dataPerYear`,{dataType,year},{
                 headers: {
                     Authorization: "Bearer " + getState().auth.user.token, 
                 }})
-                
-            dispatch(dataActions.getNH4PerYear(res.data));
+                if(dataType==="NH4"){
+                    dispatch(dataActions.getNH4PerYear(res.data));    
+                }else if(dataType==="PxOy"){
+                    dispatch(dataActions.getPxOyPerYear(res.data));
+                }else if(dataType==="S"){
+                    dispatch(dataActions.getSPerYear(res.data));
+                }      
+            
         }catch(err){
-           
             toast.error(err.response.data)
         }
     }
 }
-export {getNH4AverageData,getPxOyAverageData,getSAverageData,postFile,getNH4DataPerDate,getPxOyDataPerDate,getSDataPerDate,getNH4DataPerMonth,getPxOyDataPerMonth,getSDataPerMonth,getNH4DataPerYear}
+
+const getRecentData=(dataType)=>{
+    return async (dispatch,getState)=>{
+        try{
+            
+            const res= await request.get(`/api/data/recent/${dataType}`,{
+                headers: {
+                    Authorization: "Bearer " + getState().auth.user.token, 
+                }})
+                if(dataType==="NH4"){
+                    dispatch(dataActions.getNH4RecentData(res.data));    
+                }else if(dataType==="PxOy"){
+                    dispatch(dataActions.getPxOyRecentData(res.data));
+                }else if(dataType==="S"){
+                    dispatch(dataActions.getSRecentData(res.data));
+                }    
+        }catch(err){
+           
+            //toast.error(err.response.data)
+        }
+    }
+}
+
+
+export {getNH4AverageData,getPxOyAverageData,getSAverageData,postFile,getDataPerDate,getDataPerMonth,getDataPerYear,getRecentData,getArrangementsNumber}

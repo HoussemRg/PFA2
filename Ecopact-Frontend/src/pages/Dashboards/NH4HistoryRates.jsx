@@ -4,17 +4,18 @@ import * as yup from 'yup'
 import {useForm} from 'react-hook-form'
 import {yupResolver} from '@hookform/resolvers/yup'
 import {useDispatch,useSelector} from 'react-redux'
-import { getNH4DataPerDate, getNH4DataPerMonth, getNH4DataPerYear } from "../../apiCalls/dataApiCall";
+import { getDataPerDate, getDataPerMonth, getDataPerYear, getNH4AverageData } from "../../apiCalls/dataApiCall";
 import { useEffect,useState } from "react";
 import { dataActions } from "../../slices/dataSlice";
 
 const NH4HistoryRates = () => {
   const dispatch=useDispatch();
-  const {NH4DataPerDate,NH4DataPerMonth,NH4DataPerYear,recentNH4Year}=useSelector(state=>state.data)
+  const {NH4DataPerDate,NH4DataPerMonth,NH4DataPerYear,recentNH4Year,NH4AverageRates}=useSelector(state=>state.data)
   const [NH4AverageRatePerMonth,setNH4AverageRatePerMonth]=useState(null)
   const [NH4RatesNumberPerMonth,setNH4RatesNumberPerMonth]=useState(null)
   const [NH4AverageRatePerYear,setNH4AverageRatePerYear]=useState(null)
   const [NH4RatesNumberPerYear,setNH4RatesNumberPerYear]=useState(null)
+  
   const specificDateSchema=yup.object().shape({
     date:yup.date().required("Full date is required"),
   });
@@ -39,16 +40,16 @@ const NH4HistoryRates = () => {
     let year = date.getFullYear();
     let month = date.getMonth() + 1;
     let day = date.getDate();
-    dispatch(getNH4DataPerDate('NH4',year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day)));
+    dispatch(getDataPerDate('NH4',year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day)));
   }
   const submitMonth=(data)=>{
     const [year,month]=data.month.split("-");
-    dispatch(getNH4DataPerMonth('NH4',month,year))
+    dispatch(getDataPerMonth('NH4',month,year))
   }
   const submitYear=(data)=>{
     const year=data.year;
     dispatch(dataActions.setRecentNH4Year(year))
-    dispatch(getNH4DataPerYear('NH4',year));
+    dispatch(getDataPerYear('NH4',year));
   }
   const calculateNH4AverageRateAndNumberPerMonth=()=>{
     if(NH4DataPerMonth.length!==0){
@@ -75,6 +76,7 @@ const NH4HistoryRates = () => {
   useEffect(()=>{
     calculateNH4AverageRateAndNumberPerMonth();
     calculateNH4AverageRateAndNumberPerYear();
+    dispatch(getNH4AverageData());
   },[NH4DataPerMonth,NH4DataPerYear,recentNH4Year])
 
   return (
@@ -93,13 +95,13 @@ const NH4HistoryRates = () => {
         </div>
         <div className="flex flex-col gap-2">
           <div className="text-blue-900 px-2 py-4 font-bold">Result</div>
-          { NH4DataPerDate?.data.dataRate ? <div className="text-lg font-bold pl-4 ">{NH4DataPerDate?.data.dataRate}</div> : <div className="text-lg pl-4">No data found</div> }
+          { NH4DataPerDate ? <div className="text-lg font-bold pl-4 ">{NH4DataPerDate}</div> : <div className="text-lg pl-4">No data found</div> }
         </div>
       </div>
       <div className="flex flex-col gap-1 w-2/3">
         <div className="flex flex-col gap-3 px-2 py-2 border-2 border-gray-300 rounded shadow-xl bg-gray-50   col-span-1 text-blue-950">
-          <p className="  font-bold">Last month average rate</p>
-          <div className="text-2xl font-bold ">3.6</div>
+          <p className="  font-bold">Global average rate</p>
+          <div className="text-2xl font-bold ">{NH4AverageRates}</div>
         </div>
         <div className="flex flex-col gap-3 px-2 py-2 border-2 rounded border-gray-300 shadow-xl bg-gray-50  col-span-1 text-blue-950">
           <p className="  font-bold">Threshold limit</p>

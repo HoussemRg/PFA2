@@ -15,5 +15,16 @@ const loginUser=(user)=>{
         }
     }
 }
+const registerUser=async(user)=>{
+    try{
+        const res = await request.post('/api/auth/register',user);
+        toast.success("User registred successfully ! ");
+        return true;
+    }catch(err){
+        
+        toast.error(err.response.data);
+    }
 
-export {loginUser};
+}
+
+export {loginUser,registerUser};

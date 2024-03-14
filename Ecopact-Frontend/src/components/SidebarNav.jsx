@@ -2,32 +2,27 @@ import { Sidebar, Menu, MenuItem, useProSidebar, SubMenu } from "react-pro-sideb
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import { IoAnalyticsOutline } from "react-icons/io5";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { IoSettings } from "react-icons/io5";import '../index.css'
 import AppLogo from '../../public/assets/logo.jpg'
 //imported icons
 import { FaTableList } from "react-icons/fa6";
 import { ImStatsDots } from "react-icons/im";
-import { FaAngleDown } from "react-icons/fa6";
-import { FaRegCircle } from "react-icons/fa6";
-import { FaAngleLeft } from "react-icons/fa";
-import { PiListBold } from "react-icons/pi";
-import { HiMiniHome } from "react-icons/hi2";
-import { MdContactSupport } from "react-icons/md";
-import Logo from "../assets/logo.jpeg";
-import Profile from "../assets/profile.png";
-import { useState } from "react";
-import { Link } from "react-router-dom";
 
+import { Link, useNavigate} from "react-router-dom";
+
+import { useSelector } from "react-redux";
 export const SidebarNav = ({
   setDashboard,
 }) => {
-  const user = true;
+  
   const { collapseSidebar } = useProSidebar();
-
+  const LoggedUser=useSelector(state=>state.auth.user);
+  const navigateToUpdatePage = () =>{
+    navigate(`/users/edit/${LoggedUser.id}`);
+  }
+  const navigate=useNavigate();
   const navigateToMainDashboard = () => {
     const nav={
       mainDashboard: true,
@@ -160,10 +155,9 @@ export const SidebarNav = ({
             
           
           </MenuItem >
-          <MenuItem className="text-white bg-blue-900" id="item" icon={<IoSettings className="text-xl"/>}>Update Profile</MenuItem>
+          <MenuItem onClick={navigateToUpdatePage} className="text-white bg-blue-900" id="item" icon={<IoSettings className="text-xl"/>}>Update Profile</MenuItem>
             
-
-          <MenuItem onClick={navigateToAdminDashboard} id="item" className="text-white" icon={<FaTableList />}>Admin Dashboard</MenuItem>
+          {LoggedUser?.isAdmin&&<MenuItem onClick={navigateToAdminDashboard} id="item" className="text-white" icon={<FaTableList />}>Admin Dashboard</MenuItem>}  
           <MenuItem onClick={navigateToMainDashboard} id="item" className="text-white" icon={<FaTableList />}>Main Dashboard</MenuItem>
           <SubMenu id="item" className="text-white" icon={<ImStatsDots />} label="Historical rates">
                   <MenuItem onClick={navigateToNH4HistoryDashboard} className="sub bg-blue-950" icon={<IoAnalyticsOutline/>}>NH4 Historical Rates</MenuItem>
@@ -185,4 +179,3 @@ export const SidebarNav = ({
       </div>
   );
 };
-//sulfur

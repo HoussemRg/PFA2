@@ -3,13 +3,17 @@ import {set, useForm} from 'react-hook-form';
 import { useState } from "react";
 import { Link, useNavigate} from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup"
+
+import { useDispatch,useSelector } from "react-redux";
+import * as yup from "yup";
+import { registerUser } from "../apiCalls/authApiCall";
 const Register = () => {
+  const dispatch = useDispatch();
   let navigate = useNavigate();
   const formShema = yup.object({
-    fname: yup.string().required('Enter your first name'),
-    lname: yup.string().required('Enter your last name'),
-    phone: yup.string().required('Enter your phone number'),
+    firstName: yup.string().required('Enter your first name'),
+    lastName: yup.string().required('Enter your last name'),
+    phoneNumber: yup.string().required('Enter your phone number'),
     email: yup.string().email("Email format is not valid").required('Email is required'),
     password: yup.string().required('Password is required')
     .min(6, "Password length should be at least 6 characters")
@@ -21,10 +25,12 @@ const Register = () => {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(formShema)
   });
-  const printData = (data) =>{
-      console.log(data);
-      navigate("/login");
-      
+  const onSubmit = (data)=>{
+    console.log(data)
+    registerUser({
+      ...data,
+      profilePhoto: document.querySelector('.img')[0]
+    }); 
   };
   
   return (
@@ -42,7 +48,7 @@ const Register = () => {
             </div>
 
             <div className="mb-12 md:mb-0 md:w-8/12 lg:w-5/12 xl:w-5/12">
-              <form onSubmit={handleSubmit(printData)}>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-row items-center justify-center">
                   <p className="mb-0 mr-4 text-lg font-semibold text-center">Sign Up </p>
                 </div>
@@ -57,7 +63,7 @@ const Register = () => {
                     id="exampleFormControlInput2"
                     placeholder="First name"
                     name="fname"
-                    {...register('fname', {required: true})}
+                    {...register('firstName', {required: true})}
                     
                   />
                   <label
@@ -74,7 +80,7 @@ const Register = () => {
                     id="exampleFormControlInput2"
                     placeholder="Last name"
                     name="lname"
-                    {...register('lname', {required: true})}
+                    {...register('lastName', {required: true})}
                   />
                   <label
                     className="pointer-events-none absolute left-3 bottom-4 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[1.15rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
@@ -107,7 +113,7 @@ const Register = () => {
                     id="exampleFormControlInput2"
                     placeholder="Phone num"
                     name="phone"
-                    {...register('phone', {required: true})}
+                    {...register('phoneNumber', {required: true})}
                   />
                   <label
                     className="pointer-events-none absolute left-3 bottom-4 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[1.15rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
@@ -135,10 +141,11 @@ const Register = () => {
                 <div className="relative mb-6" data-te-input-wrapper-init>
                   <input
                     type="file"
-                    className="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+                    className="peer img block min-h-[auto] w-full rounded border-0 bg-transparent px-3 leading-[2.15] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
                     id="exampleFormControlInput22"
-                    name="img"
-                    {...register('img')}
+                    name="profilePhoto"
+                    {...register('profilePhoto', {required: true})}
+
                   />
                   <label
                     className="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[2.15] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[1.15rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[1.15rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"

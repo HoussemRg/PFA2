@@ -1,20 +1,21 @@
-import { FaPercent } from "react-icons/fa";
 import { SiReact } from "react-icons/si";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import NH4LineChartPerMonth from "./charts/NH4LineChartPerMonth";
-import PxOyLineChartPerMonth from "./charts/PxOyLineChartPerMonth";
 import { SiMoleculer } from "react-icons/si";
 import {useSelector,useDispatch} from 'react-redux'
 import { useEffect, useState } from "react";
-import { getNH4AverageData, getPxOyAverageData, getSAverageData, postFile } from "../apiCalls/dataApiCall";
+import { getArrangementsNumber, getNH4AverageData, getPxOyAverageData, getRecentData, getSAverageData, postFile } from "../apiCalls/dataApiCall";
 import { toast } from "react-toastify";
+import RecentNH4Data from "./charts/RecentNH4Data";
+import RecentPxOyData from "./charts/RecentPxOyData";
+import RecentSData from "./charts/RecentSData";
+import ArrangmentPieChart from "./charts/ArrangmentPieChart";
 
 
 
 
 const Main = () => {
   const [fileSelected,setFileSelected]=useState(null);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  
   const dispatch=useDispatch();
   const {NH4AverageRates}=useSelector(state => state.data);
   const {PxOyAverageRates}=useSelector(state => state.data);
@@ -25,8 +26,6 @@ const Main = () => {
     if(selectedFile){
       setFileSelected(selectedFile);
     }
-    
-    
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,44 +34,42 @@ const Main = () => {
       return;
     }
     const formData = new FormData();
-    
     formData.append("file", fileSelected);
-    //console.log(formData.get("file"))
     dispatch(postFile(formData));
-    setFormSubmitted(true); 
   };
   
   useEffect(()=>{
     dispatch(getNH4AverageData());
     dispatch(getPxOyAverageData());
     dispatch(getSAverageData());
-    setFileSelected(null);
-    setFormSubmitted(false);
-  },[formSubmitted])
+    dispatch(getRecentData('NH4'));
+    dispatch(getRecentData('PxOy'));
+    dispatch(getRecentData('S'));
+    dispatch(getArrangementsNumber())
+  },[])
 
   return (
     <div className=" w-full h-full flex flex-col gap-5 mx-auto ">
       <h1 className=" text-blue-900 text-2xl font-bold py-1">Global Dashboard</h1>
       <div className="flex justify-between items-stretch py-2  ">
         <div className="shadow-xl flex">
-            <div className="text-center p-6 bg-blue-600 flex justify-center items-center rounded-l text-2xl text-gray-50"><FaPercent /></div>
+            <div className="text-center p-6 bg-blue-600 flex justify-center items-center rounded-l text-2xl text-gray-50"><SiMoleculer /></div>
             <div className="flex pb-5 pt-1 pl-2 pr-4  justify-start flex-col">
-              <p className="text-sm">Overall average rate</p>
-              <span className=" text-gray-500 text-xs">(NH4 and PxOy)</span>
+              <p className="text-sm">NH4 average rate</p>
               <div className=" font-bold text-lg ">{NH4AverageRates}</div>
             </div>
           </div>
           <div className="shadow-xl rounded flex">
             <div className="text-center p-6 bg-red-600 flex justify-center items-center rounded-l text-gray-50 text-2xl"><SiMoleculer /></div>
             <div className="flex pb-5 pt-1 pl-2 pr-4  justify-start flex-col">
-              <p className="text-sm">NH4 average rate</p>
+              <p className="text-sm">PxOy average rate</p>
               <div className=" font-bold text-lg ">{PxOyAverageRates}</div>
             </div>
           </div>
           <div className="shadow-xl flex rounded">
             <div className="text-center p-6 bg-green-600 flex justify-center rounded-l items-center text-2xl text-gray-50"><SiReact /></div>
             <div className="flex pb-5 pt-1 pl-2 pr-4  justify-start flex-col">
-              <p className="text-sm">PxOy average rate</p>
+              <p className="text-sm">S average rate</p>
               <div className=" font-bold text-lg ">{SAverageRates}</div>
             </div>
           </div>
@@ -91,19 +88,27 @@ const Main = () => {
         
       </div>
       <div className="flex flex-col gap-3 mt-4">
-        <p className="text-xl  text-blue-900 ">Last month analysis</p>
+        <p className="text-xl  text-blue-900 ">Recent analysis</p>
         <div className="grid grid-cols-2 grid-rows-1 gap-5 h-80">
-        <div className="bg-gray-50  shadow-xl">
-            <NH4LineChartPerMonth />
+          <div className="bg-gray-50  shadow-xl">
+              <RecentNH4Data />
+          </div>
+          <div className="bg-gray-50  shadow-xl">
+              <RecentPxOyData  />
+          </div>
         </div>
-        <div className="bg-gray-50  shadow-xl">
-            <PxOyLineChartPerMonth  />
+        <div className="grid grid-cols-2 grid-rows-1 gap-5 h-80">
+          <div className="bg-gray-50  shadow-xl">
+              <RecentSData />
+          </div>
+          <div className="bg-gray-50  shadow-xl">
+              <ArrangmentPieChart  />
+          </div>
         </div>
       </div>
-      </div>
-      
     </div>
   )
 }
+
 
 export default Main
